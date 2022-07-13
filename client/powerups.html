@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Faster+One&family=Luckiest+Guy&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/styles/style.css">
+    <title>Powerups</title>
+</head>
+<body>
+
+    <header>
+        <div class="container">
+            <h1>STACKING ROUND ROBIN</h1>
+            <ul>
+                <!-- <li><a href="index.html">Tournament Board</a></li> -->
+                <li class="current"><a href="powerups.html">Points</a></li>
+                <li><a href="reference.html">Reference</a></li>
+                
+                
+            </ul>
+        </div>
+    </header>
+
+    <div class="wrapper">
+        <div class="board" style="font-size: 50px; overflow-y: auto;">
+            <div class="LK" style="display: inline-block;">LK points: 0 </div> <button class="add" style="height: 30px; width: 30px;">+</button><button class="neg"  style="height: 30px; width: 30px;">-</button> <br>
+            <div class="TJY" style="display: inline-block;">TJY points: 0</div> <button class="add" style="height: 30px; width: 30px;">+</button><button class="neg"   style="height: 30px; width: 30px;">-</button>  <br>
+            <div class="JV" style="display: inline-block;">JV points: 0</div> <button class="add" style="height: 30px; width: 30px;">+</button><button class="neg"   style="height: 30px; width: 30px;">-</button> <br>
+            <div class="LXR" style="display: inline-block;">LXR points: 0</div> <button class="add" style="height: 30px; width: 30px;">+</button><button class="neg"   style="height: 30px; width: 30px;">-</button> <br>
+            <div class="JL" style="display: inline-block;">JL points: 0</div> <button class="add" style="height: 30px; width: 30px;">+</button><button class="neg"   style="height: 30px; width: 30px;">-</button> <br>
+            <div class="JHA" style="display: inline-block;">JHA points: 0</div> <button class="add" style="height: 30px; width: 30px;">+</button><button class="neg"   style="height: 30px; width: 30px;">-</button> <br>
+            <div class="SZF" style="display: inline-block;">SZF points: 0</div> <button class="add" style="height: 30px; width: 30px;">+</button><button class="neg"   style="height: 30px; width: 30px;">-</button> <br>
+            <div class="H" style="display: inline-block;">H points: 0</div> <button class="add" style="height: 30px; width: 30px;">+</button><button class="neg"   style="height: 30px; width: 30px;">-</button> <br>
+        </div>
+        <div class="power-options">
+            <h1 class="optionx">--</h1>
+            <h1 class="optiony">--</h1>
+            <h1 class="optionz">--</h1>
+            
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <!-- <script src="/js/index.js"></script> -->
+    <script src="/js/powerups.js"></script>
+</body>
+</html>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Faster+One&family=Luckiest+Guy&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/styles/style.css">
+    <title>Points</title>
+</head>
+<body>
+
+    <header>
+        <div class="container">
+            <h1>STACKING ROUND ROBIN</h1>
+            <ul>
+                <!-- <li><a href="index.html">Tournament Board</a></li> -->
+                <li class="current"><a href="points.html">Points</a></li>
+                <li><a href="reference.html">Reference</a></li>
+                
+            </ul>
+        </div>
+    </header>
+
+    <div class="wrapper">
+        <div class="board" style="font-size: 50px; overflow-y: auto;">
+            <div class="LK">LK points: 0 </div> 
+            <div class="TJY">TJY points: 0</div> 
+            <div class="JV">JV points: 0</div> 
+            <div class="LXR">LXR points: 0</div> 
+            <div class="JL">JL points: 0</div> 
+            <div class="JHA">JHA points: 0</div> 
+            <div class="SZF">SZF points: 0</div> 
+            <div class="H">H points: 0</div> 
+        </div>
+        <div class="power-options">
+            <h1 class="optionx">--</h1>
+            <h1 class="optiony">--</h1>
+            <h1 class="optionz">--</h1>
+            
+            <button class="add" style="height: 0px; width: 0px;">+</button><button class="neg"   style="height: 0px; width: 0px;">-</button>
+            <button class="add" style="height: 0px; width: 0px;">+</button><button class="neg"   style="height: 0px; width: 0px;">-</button>
+            <button class="add" style="height: 0px; width: 0px;">+</button><button class="neg"   style="height: 0px; width: 0px;">-</button>
+            <button class="add" style="height: 0px; width: 0px;">+</button><button class="neg"   style="height: 0px; width: 0px;">-</button>
+            <button class="add" style="height: 0px; width: 0px;">+</button><button class="neg"   style="height: 0px; width: 0px;">-</button>
+            <button class="add" style="height: 0px; width: 0px;">+</button><button class="neg"   style="height: 0px; width: 0px;">-</button>
+            <button class="add" style="height: 0px; width: 0px;">+</button><button class="neg"   style="height: 0px; width: 0px;">-</button>
+            <button class="add" style="height: 0px; width: 0px;">+</button><button class="neg"   style="height: 0px; width: 0px;">-</button>
+            
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <!-- <script src="/js/index.js"></script> -->
+    <script src="/js/powerups.js"></script>
+</body>
+</html>
