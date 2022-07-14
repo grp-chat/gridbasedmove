@@ -121,6 +121,7 @@ io.sockets.on('connection', function (sock) {
             gridSystem.playersArr.forEach((player, index) => {
                 if (player.id === sock.id) {
                     gridSystem.movePlayer(data, gridSystem.playersArr[index]);
+                    io.emit('sendMatrix', gridMatrix);
                 }
             });
             
@@ -152,6 +153,6 @@ io.sockets.on('connection', function (sock) {
 
 setInterval(function () {
     //io.emit('pushServerVals', ServerVals);
-    io.emit('sendMatrix', gridMatrix);
+    //io.emit('sendMatrix', gridMatrix);
 
 }, 1000 / 25);
