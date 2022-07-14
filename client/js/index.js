@@ -15,7 +15,7 @@ const promptMsg = () => {
     const JHA = {pinNumber:'3583', nickname: 'JHA'};
     const JL = {pinNumber:'1072', nickname: 'JL'};
     const JV = {pinNumber:'5691', nickname: 'JV'};
-    const H = {pinNumber:'4048', nickname: 'H'};
+    const H = {pinNumber:'1502', nickname: 'LEN'};
     const TCR = {pinNumber:'8', nickname: 'TCR'};
 
     var nick = prompt("Please enter your pin number:");
@@ -42,13 +42,25 @@ promptMsg();
 sock.emit('newuser', nickname);
 //LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL
 
+/* const gridMatrix = [
+    [1, 1, 1, 1, 1, 1, 1],
+    [1, 0, 0, 0, 0, 0, 1],
+    [1, 0, 0, 0, 0, 0, 1],
+    [1, 0, 0, 0, 0, 0, 1],
+    [1, 0, 1, 1, 1, 0, 1],
+    [1, 0, 0, 0, 1, 0, 1],
+    [1, 0, 1, 1, 1, 0, 1],
+    [1, 0, 0, 0, 0, 0, 1],
+    [1, 1, 1, 1, 1, 1, 1]
+]; */
 
-class GridSystem {
+
+/* class GridSystem {
     constructor(matrix) {
         this.matrix = matrix;
-        this.uiContext = this.#getContext(420, 580, "#111");
-        this.outlineContext = this.#getContext(0, 0, "#444");
-        this.topContext = this.#getContext(0, 0, "#111", true);
+        //this.uiContext = this.#getContext(420, 580, "#111");
+        this.outlineContext = this.#getContext(0, 0, "#111");
+        //this.topContext = this.#getContext(0, 0, "#111", true);
         this.cellSize = 40;
         this.padding = 2;
 
@@ -69,12 +81,7 @@ class GridSystem {
             sock.emit('keyPress', keyCode);
         });
 
-        /* document.addEventListener("click", () => {
-            this.moveSwitch++;
-            if (this.moveSwitch === 3) {
-                this.moveSwitch = 0;
-            }
-        }); */
+        
     }
 
     #renderPlayer(cellVal) {
@@ -164,14 +171,14 @@ class GridSystem {
         this.context = this.canvas.getContext("2d");
         this.width = this.canvas.width = w;
         this.height = this.canvas.height = h;
-        this.canvas.style.position = "absolute";
+        this.canvas.style.position = "relative";
         this.canvas.style.background = color;
         if (isTransparent) {
             this.canvas.style.backgroundColor = "transparent";
         }
-        const center = this.#getCenter(w, h);
-        this.canvas.style.marginLeft = center.x;
-        this.canvas.style.marginTop = center.y;
+        //const center = this.#getCenter(w, h);
+        this.canvas.style.marginLeft = "0px";
+        //this.canvas.style.marginTop = center.y;
         document.body.appendChild(this.canvas);
 
         return this.context;
@@ -185,13 +192,13 @@ class GridSystem {
         this.outlineContext.canvas.width = w;
         this.outlineContext.canvas.height = h;
 
-        const center = this.#getCenter(w, h);
-        this.outlineContext.canvas.style.marginLeft = center.x;
-        //this.outlineContext.canvas.style.marginLeft = "10px";
-        this.outlineContext.canvas.style.marginTop = center.y;
+        //const center = this.#getCenter(w, h);
+        //this.outlineContext.canvas.style.marginLeft = center.x;
+        //this.outlineContext.canvas.style.marginLeft = "2px";
+        //this.outlineContext.canvas.style.marginTop = center.y;
 
-        this.topContext.canvas.style.marginLeft = center.x;
-        this.topContext.canvas.style.marginTop = center.y;
+        //this.topContext.canvas.style.marginLeft = center.x;
+        //this.topContext.canvas.style.marginTop = center.y;
 
         for (let row = 0; row < this.matrix.length; row++) {
             for (let col = 0; col < this.matrix[row].length; col++) {
@@ -215,11 +222,13 @@ class GridSystem {
             }
         }
 
-        this.uiContext.font = "20px Courier";
-        this.uiContext.fillStyle = "white";
-        this.uiContext.fillText("Grid Based System", 20, 30);
     }
 }
+ */
+
+
+
+
 
 class GridSystemClient {
     constructor(matrix) {
@@ -227,7 +236,7 @@ class GridSystemClient {
         //this.uiContext = this.#getContext(420, 580, "#111");
         this.outlineContext = this.#getContext(0, 0, "#444");
         //this.topContext = this.#getContext(0, 0, "#111", true);
-        this.cellSize = 40;
+        this.cellSize = 35;
         this.padding = 2;
         this.students = ["LK", "LXR", "SZF", "JHA", "JL", "JV", "H", "TCR"];
 
@@ -350,9 +359,10 @@ class GridSystemClient {
         this.outlineContext.canvas.height = h;
 
         const center = this.#getCenter(w, h);
-        this.outlineContext.canvas.style.marginLeft = center.x;
-        //this.outlineContext.canvas.style.marginLeft = "10px";
-        this.outlineContext.canvas.style.marginTop = center.y;
+        //this.outlineContext.canvas.style.marginLeft = center.x;
+        //console.log(center.y);
+        this.outlineContext.canvas.style.marginLeft = "10px";
+        this.outlineContext.canvas.style.marginTop = "2px";
 
         /* this.topContext.canvas.style.marginLeft = center.x;
         this.topContext.canvas.style.marginTop = center.y; */
@@ -386,21 +396,13 @@ class GridSystemClient {
 }
 
 
-const gridMatrix = [
-    [1, 1, 1, 1, 1, 1, 1],
-    [1, 0, 0, 0, 0, 0, 1],
-    [1, 0, 0, 0, 0, 0, 1],
-    [1, 0, 0, 0, 0, 0, 1],
-    [1, 0, 1, 1, 1, 0, 1],
-    [1, 0, 0, 0, 1, 0, 1],
-    [1, 0, 1, 1, 1, 0, 1],
-    [1, 0, 0, 0, 0, 0, 1],
-    [1, 1, 1, 1, 1, 1, 1]
-];
 
+document.addEventListener("keydown", ({ keyCode }) => {
+    //this.#movePlayer(keyCode, this.playersArr[this.moveSwitch]);
+    sock.emit('keyPress', keyCode);
+});
 
-
-const gridSystem = new GridSystem(gridMatrix);
+//const gridSystem = new GridSystem(gridMatrix);
 
 
 
@@ -410,4 +412,5 @@ const gridSystem = new GridSystem(gridMatrix);
 sock.on('sendMatrix', (data) => {
     const clientRender = new GridSystemClient(data);
     clientRender.render();
+    console.log("run")
 });
