@@ -46,7 +46,7 @@ class GridSystem {
         this.padding = 2;
 
 
-        this.p1 = { x: 1, y: 7, color: "orange", lable: 2, id: "TCR", steps: 1000 };
+        this.p1 = { x: 1, y: 7, color: "orange", lable: 2, id: "TCR", steps: 30 };
 
 
         this.p2 = { x: 2, y: 2, lable: 3, id: "LXR" };
@@ -85,21 +85,25 @@ class GridSystem {
         if (keyCode === 37) {
             if (this.#isValidMove(plyrSlot, -1, 0)) {
                 this.#updPosition(37, plyrSlot);
+                plyrSlot.steps--;
             }
 
         } else if (keyCode === 39) {
             if (this.#isValidMove(plyrSlot, 1, 0)) {
                 this.#updPosition(39, plyrSlot);
+                plyrSlot.steps--;
             }
 
         } else if (keyCode === 38) {
             if (this.#isValidMove(plyrSlot, 0, -1)) {
                 this.#updPosition(38, plyrSlot);
+                plyrSlot.steps--;
             }
 
         } else if (keyCode === 40) {
             if (this.#isValidMove(plyrSlot, 0, 1)) {
                 this.#updPosition(40, plyrSlot);
+                plyrSlot.steps--;
             }
 
         }
@@ -126,6 +130,19 @@ class GridSystem {
 
     }
 
+    teleportMeOut() {
+        this.matrix[this.p1.y][this.p1.x] = 0;
+        this.matrix[7][4] = this.p1.lable;
+        this.p1.y = 7;
+        this.p1.x = 4;
+    }
+    teleportMeIn() {
+        this.matrix[this.p1.y][this.p1.x] = 0;
+        this.matrix[7][1] = this.p1.lable;
+        this.p1.y = 7;
+        this.p1.x = 1;
+    }
+
 }
 
 const gridSystem = new GridSystem(gridMatrix);
@@ -147,18 +164,13 @@ io.sockets.on('connection', function (sock) {
 
         sock.on('keyPress', function (data) {
             gridSystem.playersArr.forEach((player, index) => {
-                if (player.id === sock.id) {
+                if (player.id === sock.id && player.steps > 0) {
                     gridSystem.movePlayer(data, gridSystem.playersArr[index]);
-                    player.steps--;
                     var updSteps = player.steps;
                     io.emit('sendMatrix', { gridMatrix, updSteps });
                 }
             });
 
-            
-            
-            
-            
         });
 
     });
@@ -167,6 +179,13 @@ io.sockets.on('connection', function (sock) {
         delete SOCKET_LIST[sock.id];
         Player.onDisconnect(sock);
     }); */
+
+    sock.on('teleportMeOut', () => {
+        gridSystem.teleportMeOut();
+    });
+    sock.on('teleportMeIn', () => {
+        gridSystem.teleportMeIn();
+    });
 
     sock.on('chat-to-server', (data) => {
         io.emit('chat-to-clients', data);

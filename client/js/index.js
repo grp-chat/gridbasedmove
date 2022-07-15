@@ -309,6 +309,13 @@ function appendMessage(message) {
         }
     }
 
+    if (message === "TCR: teleport me out" && nickname === "TCR") {
+        sock.emit('teleportMeOut');
+    }
+    if (message === "TCR: teleport me in" && nickname === "TCR") {
+        sock.emit('teleportMeIn');
+    }
+
 
     var slicedMessage = message.slice(0, 13);
     var watTeam = slicedMessage.slice(7);
@@ -535,7 +542,7 @@ class GridSystemClient {
 createChatDivs();
 
 document.addEventListener("keydown", (e) => {
-    e.view.event.preventDefault();
+    //e.view.event.preventDefault();
     sock.emit('keyPress', e.keyCode);
 });
 
