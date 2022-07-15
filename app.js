@@ -64,6 +64,7 @@ class GridSystem {
             this.#startingPoint(player);
         });
         
+        
 
         this.moveSwitch = 0;
         
