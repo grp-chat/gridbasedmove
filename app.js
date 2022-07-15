@@ -229,8 +229,8 @@ io.sockets.on('connection', function (sock) {
 });
 
 
-setInterval(function () {
+/* setInterval(function () {
     var playersArr = gridSystem.playersArr;
     io.emit('sendMatrix', { gridMatrix, playersArr });
 
-}, 2000);
+}, 2000); */
