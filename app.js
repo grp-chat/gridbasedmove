@@ -46,17 +46,17 @@ class GridSystem {
         this.padding = 2;
 
 
-        this.p1 = { x: 1, y: 7, color: "orange", lable: 2, id: "TCR", steps: 30 };
+        this.p1 = { x: 1, y: 7, lable: 2, id: "TCR", steps: 30 };
 
 
-        this.p2 = { x: 2, y: 2, lable: 3, id: "LXR" };
-        this.p3 = { x: 1, y: 1, lable: 4, id: "LK" };
-        this.p4 = { x: 2, y: 3, lable: 5, id: "JHA" };
+        this.p2 = { x: 2, y: 2, lable: 3, id: "LXR", steps: 3000 };
+        this.p3 = { x: 1, y: 1, lable: 4, id: "LK", steps: 3000 };
+        this.p4 = { x: 2, y: 3, lable: 5, id: "JHA", steps: 3000 };
 
-        this.p5 = { x: 1, y: 14, lable: 6, id: "JV" };
-        this.p6 = { x: 2, y: 14, lable: 7, id: "JL" };
-        this.p7 = { x: 2, y: 13, lable: 8, id: "SZF" };
-        this.p8 = { x: 2, y: 12, lable: 9, id: "LEN" };
+        this.p5 = { x: 1, y: 14, lable: 6, id: "JV", steps: 3000 };
+        this.p6 = { x: 2, y: 14, lable: 7, id: "JL", steps: 3000 };
+        this.p7 = { x: 2, y: 13, lable: 8, id: "SZF", steps: 3000 };
+        this.p8 = { x: 2, y: 12, lable: 9, id: "LEN", steps: 3000 };
         
         this.playersArr = [this.p1, this.p2, this.p3, this.p4, this.p5, this.p6, this.p7, this.p8];
 
@@ -147,29 +147,43 @@ class GridSystem {
 
 const gridSystem = new GridSystem(gridMatrix);
 
+var mindControlMode = false;
+var mindControlledStudent = "";
+
 
 io.sockets.on('connection', function (sock) {
 
     sock.on('newuser', (data) => {
 
         sock.id = data;
-        
+        var playersArr = gridSystem.playersArr;
+
         gridSystem.playersArr.forEach((player) => {
             if (player.id === sock.id) {
-                var updSteps = player.steps;
-                io.emit('sendMatrix', { gridMatrix, updSteps });
+                io.emit('sendMatrix', { gridMatrix, playersArr });
             }
             
         });
 
         sock.on('keyPress', function (data) {
-            gridSystem.playersArr.forEach((player, index) => {
-                if (player.id === sock.id && player.steps > 0) {
-                    gridSystem.movePlayer(data, gridSystem.playersArr[index]);
-                    var updSteps = player.steps;
-                    io.emit('sendMatrix', { gridMatrix, updSteps });
-                }
-            });
+            if (mindControlMode === false) {
+                gridSystem.playersArr.forEach((player, index) => {
+                    if (player.id === sock.id && player.steps > 0) {
+                        gridSystem.movePlayer(data, gridSystem.playersArr[index]);
+                        //gridSystem.movePlayer(data, gridSystem.playersArr[2]);
+                        io.emit('sendMatrix', { gridMatrix, playersArr });
+                    }
+                });
+            } else if (mindControlMode === true && sock.id === "TCR") {
+                gridSystem.playersArr.forEach((player, index) => {
+                    if (player.id === mindControlledStudent && player.steps > 0) {
+                        gridSystem.movePlayer(data, gridSystem.playersArr[index]);
+                        //gridSystem.movePlayer(data, gridSystem.playersArr[2]);
+                        io.emit('sendMatrix', { gridMatrix, playersArr });
+                    }
+                });
+            }
+            
 
         });
 
@@ -185,6 +199,26 @@ io.sockets.on('connection', function (sock) {
     });
     sock.on('teleportMeIn', () => {
         gridSystem.teleportMeIn();
+    });
+
+    sock.on('addSteps', (data) => {
+        var playersArr = gridSystem.playersArr;
+        gridSystem.playersArr.forEach((player) => {
+            if (player.id === data.studentId) {
+                var convertToNum = Number(data.getNum)
+                player.steps += convertToNum;
+                io.emit('sendMatrix', { gridMatrix, playersArr });
+            }
+        });
+    });
+
+    sock.on('mindControl', (data) => {
+        mindControlledStudent = data;
+        mindControlMode = true;
+    });
+    sock.on('mindControlOff', () => {
+        mindControlledStudent = "";
+        mindControlMode = false;
     });
 
     sock.on('chat-to-server', (data) => {

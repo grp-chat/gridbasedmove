@@ -3,8 +3,16 @@ const sock = io();
 var nickname = "";
 var player1 = new Image();
 
-player1.src = "https://lh3.googleusercontent.com/10PkSlNxU3SMcIQPGEH0Ius_wV1hiRoTtfEQFvaW_YpzdA7aZrd3LxirFvvLc93ulP_-LgVCSV4yjXpNRVNibx9iQtnebU-Vrg62xhHSQhPDAn_nhE6uBYNyoJ1unD9lVp-3ncMlEw=w2400"
+//player1.src = "https://lh3.googleusercontent.com/10PkSlNxU3SMcIQPGEH0Ius_wV1hiRoTtfEQFvaW_YpzdA7aZrd3LxirFvvLc93ulP_-LgVCSV4yjXpNRVNibx9iQtnebU-Vrg62xhHSQhPDAn_nhE6uBYNyoJ1unD9lVp-3ncMlEw=w2400"
 
+studentsArr = ["TCR", "LXR", "LK", "JHA", "JV", "JL", "SZF", "LEN"];
+elementsArr = [];
+
+studentsArr.forEach((student) => {
+    const element = document.getElementById(student+"Steps");
+    element.innerHTML = student
+    elementsArr.push(element);
+});
 //LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL
 
 const promptMsg = () => {
@@ -316,6 +324,29 @@ function appendMessage(message) {
         sock.emit('teleportMeIn');
     }
 
+    studentsArr.forEach((student) => {
+        var getNum = message.replace(/\D/g,'');
+        var studentId = student;
+        //var getNickname = message.replace(/[^A-Z]+/g, "");
+        if (message === "TCR: +" + getNum + " to " + student && nickname === "TCR") {
+            sock.emit('addSteps', { getNum, studentId });
+            sock.emit('chat-to-server', "Added " + getNum + " steps to" + student + "succesfully!");
+        }
+
+        if (message === "TCR: mind control " + studentId) {
+            sock.emit('mindControl', studentId);
+            sock.emit('chat-to-server', "Mind control mode active = " + studentId);
+        }
+    });
+
+    if (message === "TCR: mind control off") {
+        sock.emit('mindControlOff');
+        sock.emit('chat-to-server', "Mind control mode deactivated");
+    }
+
+    
+    
+
 
     var slicedMessage = message.slice(0, 13);
     var watTeam = slicedMessage.slice(7);
@@ -554,7 +585,11 @@ sock.on('chat-to-clients', data => {
 
 sock.on('sendMatrix', (data) => {
     const clientRender = new GridSystemClient(data.gridMatrix);
-    document.getElementById("p1Steps").innerHTML = "P1 steps: " + data.updSteps
+    //document.getElementById("p1Steps").innerHTML = "P1 steps: " + data.updSteps;
+    var i = 0;
+    elementsArr.forEach((element) => {
+        element.innerHTML = data.playersArr[i].id + " Steps: " + data.playersArr[i].steps + "/30";
+        i++;
+    });
     clientRender.render();
-    console.log("run")
 });
