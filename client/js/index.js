@@ -5,7 +5,7 @@ var player1 = new Image();
 
 //player1.src = "https://lh3.googleusercontent.com/10PkSlNxU3SMcIQPGEH0Ius_wV1hiRoTtfEQFvaW_YpzdA7aZrd3LxirFvvLc93ulP_-LgVCSV4yjXpNRVNibx9iQtnebU-Vrg62xhHSQhPDAn_nhE6uBYNyoJ1unD9lVp-3ncMlEw=w2400"
 
-studentsArr = ["TCR", "LXR", "LK", "JHA", "JV", "JL", "SZF", "LEN"];
+studentsArr = ["TCR", "LXR", "LK", "JHA", "JV", "JL", "SZF", "H"];
 elementsArr = [];
 
 studentsArr.forEach((student) => {
@@ -23,7 +23,7 @@ const promptMsg = () => {
     const JHA = {pinNumber:'3583', nickname: 'JHA'};
     const JL = {pinNumber:'1072', nickname: 'JL'};
     const JV = {pinNumber:'5691', nickname: 'JV'};
-    const H = {pinNumber:'1502', nickname: 'LEN'};
+    const H = {pinNumber:'4048', nickname: 'H'};
     const TCR = {pinNumber:'8', nickname: 'TCR'};
 
     var nick = prompt("Please enter your pin number:");
@@ -323,6 +323,13 @@ function appendMessage(message) {
     if (message === "TCR: teleport me in" && nickname === "TCR") {
         sock.emit('teleportMeIn');
     }
+    studentsArr.forEach((student) => {
+        if (message === "TCR: winner " + student && nickname === "TCR") {
+            var winner = student;
+            sock.emit('winner', winner);
+        }
+    });
+    
 
     studentsArr.forEach((student) => {
         var getNum = message.replace(/\D/g,'');
@@ -330,7 +337,6 @@ function appendMessage(message) {
         //var getNickname = message.replace(/[^A-Z]+/g, "");
         if (message === "TCR: +" + getNum + " to " + student && nickname === "TCR") {
             sock.emit('addSteps', { getNum, studentId });
-            sock.emit('chat-to-server', "Added " + getNum + " steps to" + student + "succesfully!");
         }
 
         if (message === "TCR: mind control " + studentId) {
@@ -342,43 +348,6 @@ function appendMessage(message) {
     if (message === "TCR: mind control off") {
         sock.emit('mindControlOff');
         sock.emit('chat-to-server', "Mind control mode deactivated");
-    }
-
-    
-    
-
-
-    var slicedMessage = message.slice(0, 13);
-    var watTeam = slicedMessage.slice(7);
-    var slicedMessage2 = message.slice(13);
-    if (slicedMessage === "TCR: + teamA " && nickname === "TCR") {
-        var oper = "add";
-        sock.emit('updScores', { watTeam, slicedMessage2, oper });
-        sock.emit('chat-to-server', "Team A score added +" + slicedMessage2 + "Points");
-    } else if (slicedMessage === "TCR: + teamB " && nickname === "TCR") {
-        var oper = "add";
-        sock.emit('updScores', { watTeam, slicedMessage2, oper } );
-        sock.emit('chat-to-server', "Team B score added +" + slicedMessage2 + "Points");
-    } else if (slicedMessage === "TCR: - teamA " && nickname === "TCR") {
-        var oper = "minus";
-        sock.emit('updScores', { watTeam, slicedMessage2, oper } );
-        sock.emit('chat-to-server', "Team A score deducted -" + slicedMessage2 + "Points");
-    } else if (slicedMessage === "TCR: - teamB " && nickname === "TCR") {
-        var oper = "minus";
-        sock.emit('updScores', { watTeam, slicedMessage2, oper } );
-        sock.emit('chat-to-server', "Team B score deducted -" + slicedMessage2 + "Points");
-    }
-
-    var slicedMessage3 = message.slice(0, 14);
-    var slicedMessage5 = message.slice(14);
-    if (slicedMessage3 === "TCR: Rem task " && nickname === "TCR") {
-        //document.getElementById(slicedMessage5).remove();
-        sock.emit('spliceIdx', slicedMessage5);
-        sock.emit('chat-to-server', "Task Id: " + slicedMessage5 + " completed and removed");
-    } else if (slicedMessage3 === "TCR: Sel task " && nickname === "TCR") {
-        sock.emit('selTask', slicedMessage5);
-        sock.emit('chat-to-server', "Task Id: " + slicedMessage5 + " selected");
-
     }
 
 
@@ -400,7 +369,7 @@ class GridSystemClient {
         //this.topContext = this.#getContext(0, 0, "#111", true);
         this.cellSize = 30;
         this.padding = 2;
-        this.students = ["LK", "LXR", "SZF", "JHA", "JL", "JV", "LEN", "TCR"];
+        this.students = ["LK", "LXR", "SZF", "JHA", "JL", "JV", "H", "TCR"];
 
         this.p1 = { color: "grey", lable: 2, id: this.students[7] };
 

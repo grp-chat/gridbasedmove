@@ -44,19 +44,22 @@ class GridSystem {
         this.matrix = matrix;
         this.cellSize = 40;
         this.padding = 2;
+        this.startingSteps = 0;
+        this.winY = 7;
+        this.winX = 37;
 
 
-        this.p1 = { x: 1, y: 7, lable: 2, id: "TCR", steps: 30 };
+        this.p1 = { x: 1, y: 7, lable: 2, id: "TCR", steps: 1000 };
 
 
-        this.p2 = { x: 2, y: 2, lable: 3, id: "LXR", steps: 3000 };
-        this.p3 = { x: 1, y: 1, lable: 4, id: "LK", steps: 3000 };
-        this.p4 = { x: 2, y: 3, lable: 5, id: "JHA", steps: 3000 };
+        this.p2 = { x: 2, y: 2, lable: 3, id: "LXR", steps: this.startingSteps };
+        this.p3 = { x: 1, y: 1, lable: 4, id: "LK", steps: this.startingSteps };
+        this.p4 = { x: 2, y: 3, lable: 5, id: "JHA", steps: this.startingSteps };
 
-        this.p5 = { x: 1, y: 14, lable: 6, id: "JV", steps: 3000 };
-        this.p6 = { x: 2, y: 14, lable: 7, id: "JL", steps: 3000 };
-        this.p7 = { x: 2, y: 13, lable: 8, id: "SZF", steps: 3000 };
-        this.p8 = { x: 2, y: 12, lable: 9, id: "LEN", steps: 3000 };
+        this.p5 = { x: 1, y: 14, lable: 6, id: "JV", steps: this.startingSteps };
+        this.p6 = { x: 2, y: 14, lable: 7, id: "JL", steps: this.startingSteps };
+        this.p7 = { x: 2, y: 13, lable: 8, id: "SZF", steps: this.startingSteps };
+        this.p8 = { x: 2, y: 12, lable: 9, id: "H", steps: this.startingSteps };
         
         this.playersArr = [this.p1, this.p2, this.p3, this.p4, this.p5, this.p6, this.p7, this.p8];
 
@@ -64,11 +67,8 @@ class GridSystem {
             this.#startingPoint(player);
         });
 
-        
-
         this.moveSwitch = 0;
         
-
     }
     #startingPoint(plyrSlot) {
         this.matrix[plyrSlot.y][plyrSlot.x] = plyrSlot.lable;
@@ -144,6 +144,17 @@ class GridSystem {
         this.p1.x = 1;
     }
 
+    winner(plyrSlot) {
+        
+        this.matrix[plyrSlot.y][plyrSlot.x] = 0;
+        this.matrix[this.winY][this.winX] = plyrSlot.lable;
+        plyrSlot.y = this.winY;
+        this.winY++;
+        
+        plyrSlot.x = 38;
+        
+    }
+
 }
 
 const gridSystem = new GridSystem(gridMatrix);
@@ -198,6 +209,17 @@ io.sockets.on('connection', function (sock) {
     sock.on('teleportMeOut', () => {
         gridSystem.teleportMeOut();
     });
+    
+    sock.on('winner', (data) => {
+        gridSystem.playersArr.forEach((player, index) => {
+            if (player.id === data) {
+                gridSystem.winner(gridSystem.playersArr[index]);
+            }
+        });
+        
+        var playersArr = gridSystem.playersArr;
+        io.emit('sendMatrix', { gridMatrix, playersArr });
+    });
     sock.on('teleportMeIn', () => {
         gridSystem.teleportMeIn();
     });
@@ -207,7 +229,14 @@ io.sockets.on('connection', function (sock) {
         gridSystem.playersArr.forEach((player) => {
             if (player.id === data.studentId) {
                 var convertToNum = Number(data.getNum)
-                player.steps += convertToNum;
+                if (player.steps + convertToNum > 30) {
+                    var message = player.id + " steps capacity exceeded! Failed."
+                    io.emit('chat-to-clients', message);
+                } else {
+                    var message2 = player.id + " added " + convertToNum + " steps succesful!"
+                    player.steps += convertToNum;
+                    io.emit('chat-to-clients', message2);
+                }
                 io.emit('sendMatrix', { gridMatrix, playersArr });
             }
         });
