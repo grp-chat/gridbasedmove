@@ -26,8 +26,8 @@ const gridMatrix = [
     [1,0,1,1,0,1,0,1,0,0,1,1,0,0,0,0,1,0,1,0,1,0,1,0,1,0,1,0,0,1,0,1,0,1,0,1,0,1],
     [1,0,0,0,0,0,0,1,0,1,0,1,0,1,1,0,1,0,0,0,1,0,1,0,1,0,1,0,0,1,0,1,0,1,0,1,0,1],
     [1,1,1,1,0,1,0,1,0,1,0,0,0,1,1,0,1,0,1,0,1,0,1,0,1,0,1,0,0,0,0,1,0,1,0,1,0,1],
-    [1,1,1,1,0,0,0,1,0,0,0,1,0,0,1,0,0,0,1,0,1,0,0,0,1,0,0,0,1,1,0,1,0,0,0,1,0,1],
-    [1,1,1,1,0,0,0,1,0,0,0,1,0,0,1,0,0,0,1,0,1,0,0,0,1,0,0,0,1,1,0,1,0,0,0,1,0,1],
+    [1,0,0,1,0,0,0,1,0,0,0,1,0,0,1,0,0,0,1,0,1,0,0,0,1,0,0,0,1,1,0,1,0,0,0,1,0,1],
+    [1,0,0,1,0,0,0,1,0,0,0,1,0,0,1,0,0,0,1,0,1,0,0,0,1,0,0,0,1,1,0,1,0,0,0,1,0,1],
     [1,1,1,1,0,1,0,1,0,1,0,0,0,1,1,0,1,0,1,0,1,0,1,0,1,0,1,0,0,0,0,1,0,1,0,1,0,1],
     [1,0,0,0,0,0,0,1,0,1,0,1,0,1,1,0,1,0,0,0,1,0,1,0,1,0,1,0,0,1,0,1,0,1,0,1,0,1],
     [1,0,1,1,0,1,0,1,0,0,1,1,0,0,0,0,1,0,1,0,1,0,1,0,1,0,1,0,0,1,0,1,0,1,0,1,0,1],
@@ -46,16 +46,31 @@ class GridSystem {
         this.padding = 2;
 
 
-        this.p1 = { x: 1, y: 1, color: "orange", lable: 2, id: "TCR" };
-        this.matrix[this.p1.y][this.p1.x] = this.p1.lable;
-        this.p2 = { x: 1, y: 2, color: "green", lable: 3, id: "LXR" };
-        this.matrix[this.p2.y][this.p2.x] = this.p2.lable;
-        this.p3 = { x: 1, y: 3, color: "purple", lable: 4, id: "LK" };
-        this.matrix[this.p3.y][this.p3.x] = this.p3.lable;
+        this.p1 = { x: 1, y: 7, color: "orange", lable: 2, id: "TCR", steps: 1000 };
+
+
+        this.p2 = { x: 2, y: 2, lable: 3, id: "LXR" };
+        this.p3 = { x: 1, y: 1, lable: 4, id: "LK" };
+        this.p4 = { x: 2, y: 3, lable: 5, id: "JHA" };
+
+        this.p5 = { x: 1, y: 14, lable: 6, id: "JV" };
+        this.p6 = { x: 2, y: 14, lable: 7, id: "JL" };
+        this.p7 = { x: 2, y: 13, lable: 8, id: "SZF" };
+        this.p8 = { x: 2, y: 12, lable: 9, id: "LEN" };
+        
+        this.playersArr = [this.p1, this.p2, this.p3, this.p4, this.p5, this.p6, this.p7, this.p8];
+
+        this.playersArr.forEach((player) => {
+            this.#startingPoint(player);
+        });
+        
 
         this.moveSwitch = 0;
-        this.playersArr = [this.p1, this.p2, this.p3];
+        
 
+    }
+    #startingPoint(plyrSlot) {
+        this.matrix[plyrSlot.y][plyrSlot.x] = plyrSlot.lable;
     }
 
     #isValidMove(plyrSlot, x, y) {
@@ -121,40 +136,40 @@ io.sockets.on('connection', function (sock) {
     sock.on('newuser', (data) => {
 
         sock.id = data;
-        io.emit('sendMatrix', gridMatrix);
+        
         sock.on('keyPress', function (data) {
             gridSystem.playersArr.forEach((player, index) => {
                 if (player.id === sock.id) {
                     gridSystem.movePlayer(data, gridSystem.playersArr[index]);
-                    io.emit('sendMatrix', gridMatrix);
+                    player.steps--;
+                    var updSteps = player.steps;
+                    io.emit('sendMatrix', { gridMatrix, updSteps });
                 }
             });
+
+            gridSystem.playersArr.forEach((player) => {
+                if (player.id === sock.id) {
+                    var updSteps = player.steps;
+                    io.emit('sendMatrix', { gridMatrix, updSteps });
+                }
+                
+
+            });
+            
             
             
         });
 
-        //io.emit('sendMatrix', gridMatrix);
-
     });
-
-    /* sock.id = Math.random();
-    SOCKET_LIST[sock.id] = sock;
-    Player.onConnect(sock); */
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~LISTEN FROM CLIENT - CONNECTION~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     /* sock.on('disconnect', function() {
         delete SOCKET_LIST[sock.id];
         Player.onDisconnect(sock);
     }); */
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~LISTEN FROM CLIENT - CONNECTION ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-
-
-
-    /* sock.on('chat-to-server', (data) => {
+    sock.on('chat-to-server', (data) => {
         io.emit('chat-to-clients', data);
-    }); */
-
+    });
 
 });
 

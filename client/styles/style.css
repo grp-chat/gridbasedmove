@@ -1,3 +1,22 @@
 body {
-    background-color: white;
+    background-color: black;
+}
+
+.details {
+    width: 275px;
+    height: 250px;
+    border: 1px solid white;
+    color: wheat;
+    position: absolute;
+    left: 1250px;
+}
+
+.chat {
+    width: 275px;
+    height: 320px;
+    border: 1px solid white;
+    color: wheat;
+    position: absolute;
+    top: 280px;
+    left: 1250px;
 }

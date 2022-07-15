@@ -226,7 +226,131 @@ sock.emit('newuser', nickname);
 }
  */
 
+function createChatDivs() {
+    const chatSec = document.getElementById("chat");
+    var chatDiv = document.createElement("div");
+    //var chatDiv = document.getElementById("chatdiv");
+    //chatDiv.setAttribute("id", "chatdiv");
+    chatDiv.style.width = "272px";
+    chatDiv.style.height = "320px";
+    //chatDiv.style = "background:rgba(255, 255, 255, 0.5); color:black; overflow: auto;"
+    chatDiv.style.background = "rgba(255, 255, 255, 0.5)";
+    chatDiv.style.color = "black";
+    chatDiv.style.overflow = "auto";
+    chatDiv.style.overflowX = "hidden";
+    //chatDiv.style.float = "right";
+    //chatDiv.style.marginLeft = "2%";
+    //chatDiv.style.position = "fixed";
+    chatDiv.style.top = "30px";
+    //chatDiv.style.right = "30px";
 
+
+    chatSec.appendChild(chatDiv);
+
+    var chatInput = document.createElement('input');
+    //chatInput.className = "form-control";
+    chatInput.style.width = "205px";
+    chatInput.style.height = "45px";
+    chatInput.setAttribute("id", "chatinput");
+    chatInput.setAttribute("type", "text");
+    chatInput.style.display = "inline";
+    chatInput.style.fontSize = "1.2em";
+    chatDiv.appendChild(chatInput);
+
+    var chatBtn = document.createElement('button');
+
+    chatBtn.className = "btn";
+    chatBtn.setAttribute("id", "chatBtn");
+    chatBtn.innerHTML = "Send";
+    chatBtn.style.height = "50px";
+    chatBtn.style.width = "55px";
+
+
+    chatDiv.appendChild(chatBtn);
+
+    var div3 = document.createElement('div');
+    div3.setAttribute("id", "div3");
+    div3.style.width = '350px';
+    div3.style.height = '260px'
+    div3.style.color = 'black';
+    div3.style.background = 'rgba(236, 236, 236, 0.5)';
+    div3.style.overflowY = "auto";
+    chatDiv.appendChild(div3);
+
+    chatBtn.addEventListener('click', function () {
+        var message = nickname + ': ';
+        message += chatInput.value;
+        sock.emit('chat-to-server', message);
+        chatInput.value = '';
+    });
+
+    chatInput.addEventListener("keyup", function (event) {
+        if (event.keyCode === 13) {
+            event.preventDefault();
+            document.getElementById("chatBtn").click();
+        }
+
+    });
+
+    return chatSec;
+}
+
+function appendMessage(message) {
+    const messageDiv = document.createElement('div');
+    messageDiv.innerText = message;
+    var div3 = document.getElementById("div3");
+    div3.append(messageDiv);
+    div3.scrollTop = div3.scrollHeight;
+    if (message === "TCR: RESET SERVER") {
+        if (nickname != "TCR") {
+            window.location.reload();
+        } else {
+            sock.emit('resetserverval');
+        }
+    }
+
+
+    var slicedMessage = message.slice(0, 13);
+    var watTeam = slicedMessage.slice(7);
+    var slicedMessage2 = message.slice(13);
+    if (slicedMessage === "TCR: + teamA " && nickname === "TCR") {
+        var oper = "add";
+        sock.emit('updScores', { watTeam, slicedMessage2, oper });
+        sock.emit('chat-to-server', "Team A score added +" + slicedMessage2 + "Points");
+    } else if (slicedMessage === "TCR: + teamB " && nickname === "TCR") {
+        var oper = "add";
+        sock.emit('updScores', { watTeam, slicedMessage2, oper } );
+        sock.emit('chat-to-server', "Team B score added +" + slicedMessage2 + "Points");
+    } else if (slicedMessage === "TCR: - teamA " && nickname === "TCR") {
+        var oper = "minus";
+        sock.emit('updScores', { watTeam, slicedMessage2, oper } );
+        sock.emit('chat-to-server', "Team A score deducted -" + slicedMessage2 + "Points");
+    } else if (slicedMessage === "TCR: - teamB " && nickname === "TCR") {
+        var oper = "minus";
+        sock.emit('updScores', { watTeam, slicedMessage2, oper } );
+        sock.emit('chat-to-server', "Team B score deducted -" + slicedMessage2 + "Points");
+    }
+
+    var slicedMessage3 = message.slice(0, 14);
+    var slicedMessage5 = message.slice(14);
+    if (slicedMessage3 === "TCR: Rem task " && nickname === "TCR") {
+        //document.getElementById(slicedMessage5).remove();
+        sock.emit('spliceIdx', slicedMessage5);
+        sock.emit('chat-to-server', "Task Id: " + slicedMessage5 + " completed and removed");
+    } else if (slicedMessage3 === "TCR: Sel task " && nickname === "TCR") {
+        sock.emit('selTask', slicedMessage5);
+        sock.emit('chat-to-server', "Task Id: " + slicedMessage5 + " selected");
+
+    }
+
+
+    if (message === "TCR: NUMBER OF PLAYERS" && nickname === "TCR") {
+        //let text = "[" + connectedArr.toString() + "]";
+        sock.emit('chat-to-server', numberOfPlayers);
+    }
+
+
+}
 
 
 
@@ -236,17 +360,23 @@ class GridSystemClient {
         //this.uiContext = this.#getContext(420, 580, "#111");
         this.outlineContext = this.#getContext(0, 0, "#444");
         //this.topContext = this.#getContext(0, 0, "#111", true);
-        this.cellSize = 35;
+        this.cellSize = 30;
         this.padding = 2;
-        this.students = ["LK", "LXR", "SZF", "JHA", "JL", "JV", "H", "TCR"];
+        this.students = ["LK", "LXR", "SZF", "JHA", "JL", "JV", "LEN", "TCR"];
 
-        this.p1 = { color: "orange", lable: 2, id: this.students[7] };
-        this.p2 = { color: "green", lable: 3, id: this.students[1] };
-        this.p3 = { color: "purple", lable: 4, id: this.students[0] };
-        
+        this.p1 = { color: "grey", lable: 2, id: this.students[7] };
 
+        this.p2 = { color: "pink", lable: 3, id: this.students[1] };
+        this.p3 = { color: "white", lable: 4, id: this.students[0] };
+        this.p4 = { color: "yellow", lable: 5, id: this.students[3] };
+
+        this.p5 = { color: "green", lable: 6, id: this.students[5] };
+        this.p6 = { color: "royalblue", lable: 7, id: this.students[4] };
+        this.p7 = { color: "orange", lable: 8, id: this.students[2] };
+        this.p8 = { color: "teal", lable: 9, id: this.students[6] };
+    
+        this.playersArr = [this.p1, this.p2, this.p3, this.p4, this.p5, this.p6, this.p7, this.p8];
         this.moveSwitch = 0;
-        this.playersArr = [this.p1, this.p2, this.p3];
 
     }
 
@@ -351,6 +481,7 @@ class GridSystemClient {
 
     }
 
+
     render() {
         const w = (this.cellSize + this.padding) * this.matrix[0].length - (this.padding);
         const h = (this.cellSize + this.padding) * this.matrix.length - (this.padding);
@@ -379,38 +510,44 @@ class GridSystemClient {
                     this.cellSize, this.cellSize);
 
                 if (plyrDet.playerId != null) {
-                    this.outlineContext.font = "bold 20px Courier";
+                    this.outlineContext.font = "bold 15px Courier";
                     this.outlineContext.fillStyle = "black";
                     this.outlineContext.fillText(plyrDet.playerId, col * (this.cellSize + this.padding) + 2,
-                        row * (this.cellSize + this.padding) + 25);
+                        row * (this.cellSize + this.padding) + 20);
                 }
 
 
             }
         }
 
-        /* this.uiContext.font = "20px Courier";
-        this.uiContext.fillStyle = "white";
-        this.uiContext.fillText("Grid Based System", 20, 30); */
+        this.outlineContext.fillStyle = "red";
+        this.outlineContext.fillRect(36 * (this.cellSize + this.padding),
+                    7 * (this.cellSize + this.padding),
+                    this.cellSize, this.cellSize);
+        this.outlineContext.fillRect(36 * (this.cellSize + this.padding),
+                    8 * (this.cellSize + this.padding),
+                    this.cellSize, this.cellSize);
+
     }
 }
 
 
+createChatDivs();
 
-document.addEventListener("keydown", ({ keyCode }) => {
-    //this.#movePlayer(keyCode, this.playersArr[this.moveSwitch]);
-    sock.emit('keyPress', keyCode);
+document.addEventListener("keydown", (e) => {
+    e.view.event.preventDefault();
+    sock.emit('keyPress', e.keyCode);
 });
 
-//const gridSystem = new GridSystem(gridMatrix);
 
-
-
-
-//gridSystem.render();
+//============================================================================================================
+sock.on('chat-to-clients', data => {
+    appendMessage(data);
+});
 
 sock.on('sendMatrix', (data) => {
-    const clientRender = new GridSystemClient(data);
+    const clientRender = new GridSystemClient(data.gridMatrix);
+    document.getElementById("p1Steps").innerHTML = "P1 steps: " + data.updSteps
     clientRender.render();
     console.log("run")
 });
