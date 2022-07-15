@@ -137,6 +137,14 @@ io.sockets.on('connection', function (sock) {
 
         sock.id = data;
         
+        gridSystem.playersArr.forEach((player) => {
+            if (player.id === sock.id) {
+                var updSteps = player.steps;
+                io.emit('sendMatrix', { gridMatrix, updSteps });
+            }
+            
+        });
+
         sock.on('keyPress', function (data) {
             gridSystem.playersArr.forEach((player, index) => {
                 if (player.id === sock.id) {
@@ -147,14 +155,7 @@ io.sockets.on('connection', function (sock) {
                 }
             });
 
-            gridSystem.playersArr.forEach((player) => {
-                if (player.id === sock.id) {
-                    var updSteps = player.steps;
-                    io.emit('sendMatrix', { gridMatrix, updSteps });
-                }
-                
-
-            });
+            
             
             
             
