@@ -63,7 +63,7 @@ class GridSystem {
         this.playersArr.forEach((player) => {
             this.#startingPoint(player);
         });
-        
+
         
 
         this.moveSwitch = 0;
@@ -229,8 +229,8 @@ io.sockets.on('connection', function (sock) {
 });
 
 
-/* setInterval(function () {
-    
-    io.emit('sendMatrix', gridMatrix);
+setInterval(function () {
+    var playersArr = gridSystem.playersArr;
+    io.emit('sendMatrix', { gridMatrix, playersArr });
 
-}, 1000 / 25); */
+}, 2000);
