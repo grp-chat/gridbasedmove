@@ -377,7 +377,7 @@ class GridSystemClient {
         this.p3 = { color: "white", lable: 4, id: this.students[0] };
         this.p4 = { color: "yellow", lable: 5, id: this.students[3] };
 
-        this.p5 = { color: "green", lable: 6, id: this.students[5] };
+        this.p5 = { color: "springgreen", lable: 6, id: this.students[5] };
         this.p6 = { color: "royalblue", lable: 7, id: this.students[4] };
         this.p7 = { color: "orange", lable: 8, id: this.students[2] };
         this.p8 = { color: "teal", lable: 9, id: this.students[6] };
