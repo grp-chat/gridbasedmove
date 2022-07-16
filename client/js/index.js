@@ -384,7 +384,6 @@ class GridSystemClient {
     
         this.playersArr = [this.p1, this.p2, this.p3, this.p4, this.p5, this.p6, this.p7, this.p8];
         this.moveSwitch = 0;
-
     }
 
     #renderPlayer(cellVal) {
